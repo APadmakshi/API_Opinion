@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +18,9 @@ import com.ooadproject.opinionboard.repo.OpinionRepo;
 import com.ooadproject.opinionboard.service.FriendsServices;
 import com.ooadproject.opinionboard.service.OpinionServices;
 
+@CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/opinion")
+@RequestMapping("/api/opinion")
 public class OpinionResource {
 	private final OpinionServices opinionServices;
 	private final FriendsServices friendsServices;

@@ -44,6 +44,9 @@ public class Person implements Serializable{
 	@JsonIgnoreProperties("person")
 	private Set<Friends> friends = new HashSet<>();
 	
+	@ManyToMany(fetch=FetchType.EAGER)
+	private Collection<Role> roles = new ArrayList<>();
+	
 	public Long getId() {
 		return id;
 	}
@@ -87,7 +90,14 @@ public class Person implements Serializable{
 	public void setIsPublic(Boolean isPublic) {
 		this.isPublic = isPublic;
 	}
+	
 
+	public Collection<Role> getRoles() {
+		return roles;
+	}
+	public void setRoles(Collection<Role> roles) {
+		this.roles = roles;
+	}
 	public Set<Friends> getFriends() {
 		return friends;
 	}
@@ -95,6 +105,18 @@ public class Person implements Serializable{
 		this.friends = friends;
 	}
 	
+	public Person(Long id, String userName, String name, String emailid, String password, LocalDate dob,
+			Boolean isPublic, Collection<Role> roles) {
+		super();
+		this.id = id;
+		this.userName = userName;
+		this.name = name;
+		this.emailid = emailid;
+		this.password = password;
+		this.dob = dob;
+		this.isPublic = isPublic;
+		this.roles = roles;
+	}
 	/*
 	 * public Set<Opinion> getOpinions() { return opinions; } public void
 	 * setOpinions(Set<Opinion> opinions) { this.opinions = opinions; }
@@ -140,6 +162,7 @@ public class Person implements Serializable{
 		return "Person [name=" + name + ", emailid=" + emailid + ", userName=" + userName + ", password=" + password
 				+ ", dob=" + dob + ", isPublic=" + isPublic + "]";
 	}
+	
 
 	
 }

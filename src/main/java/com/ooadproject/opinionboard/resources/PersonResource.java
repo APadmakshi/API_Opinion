@@ -1,17 +1,25 @@
 package com.ooadproject.opinionboard.resources;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+
+import javax.servlet.Servlet;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.ooadproject.opinionboard.person.Person;
+import com.ooadproject.opinionboard.person.Role;
 import com.ooadproject.opinionboard.service.PersonServices;
 
+import lombok.Data;
+
+@CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/person")
+@RequestMapping("/api/person")
 public class PersonResource {
 	private static PersonServices personServices = null;
 	
@@ -44,6 +52,19 @@ public class PersonResource {
 		}
 	}
 	
+	@PostMapping("/addrole")
+	public ResponseEntity<Role> saveRole(@RequestBody Role role)
+	{
+		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/person/addrole").toUriString());
+		return ResponseEntity.created(uri).body(personServices.saveRole(role));
+	}
+	
+	@PostMapping("/addroletouser")
+	public ResponseEntity<?> roletoUser(@RequestBody RoletoUserForm form)
+	{
+		personServices.addRoleToUser(form.getUserName(), form.getRoleName());
+		return ResponseEntity.ok().build();
+	}
 	@PutMapping("/updateUser")
 	public ResponseEntity<Boolean> updateUser(@RequestBody Person person)
 	{
@@ -67,5 +88,24 @@ public class PersonResource {
 			return new ResponseEntity<>(false, HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
+	
 
+}
+
+@Data
+class RoletoUserForm {
+	private String userName;
+	private String roleName;
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getRoleName() {
+		return roleName;
+	}
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
 }
