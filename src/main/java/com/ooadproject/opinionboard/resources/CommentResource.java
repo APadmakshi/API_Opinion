@@ -20,7 +20,7 @@ import com.ooadproject.opinionboard.service.CommentsServices;
 import com.ooadproject.opinionboard.service.FriendsServices;
 import com.ooadproject.opinionboard.service.OpinionServices;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/comments")
 public class CommentResource {
@@ -38,32 +38,35 @@ public class CommentResource {
 	public ResponseEntity<List<Opinion>> addComments(@RequestBody Comments comments) {
 		Comments commentCreated = commentsServices.addComments(comments);
 		List<Opinion> friendsOpinions = new ArrayList<>();
-		Friends userName = friendsServices.findFidOfUserName(comments.getUserName());
-		Friends friends = friendsServices.findFriendOfUserName(userName.getPerson().getId());
-		List<Opinion> userOpinion = opinionServices.findOpinionByUserName(comments.getUserName());
-		Collections.reverse(userOpinion);
-		friendsOpinions.addAll(userOpinion);
-		String friend = friends.getFriendsOfUserName();
-		String nonFriend = friends.getNonFriendsOfUserName();
-		String[] arrayFriends = friend.split(",");
-		String[] arrayNoFriends = nonFriend.split(",");
-		for(String s: arrayFriends)
+		if(friendsServices.findFriendsForUserName(comments.getUserName()))
 		{
-			List<Opinion> op = opinionServices.findOpinionByUserName(s);
-			Collections.reverse(op);
-			friendsOpinions.addAll(op);
-		}
-		for(String st: arrayNoFriends)
-		{
-			List<Opinion> op = opinionServices.findOpinionByUserName(st);
-			Collections.reverse(op);
-			for(Opinion o: op)
+			Friends userName = friendsServices.findFidOfUserName(comments.getUserName());
+			Friends friends = friendsServices.findFriendOfUserName(userName.getPerson().getId());
+			List<Opinion> userOpinion = opinionServices.findOpinionByUserName(comments.getUserName());
+			Collections.reverse(userOpinion);
+			friendsOpinions.addAll(userOpinion);
+			String friend = friends.getFriendsOfUserName();
+			String[] arrayFriends = friend.split(",");
+			for(String s: arrayFriends)
 			{
-			if(o.getIsPublic())
-			{
-				friendsOpinions.add(o);
-			}
-			}
+				List<Opinion> op = opinionServices.findOpinionByUserName(s);
+				Collections.reverse(op);
+				friendsOpinions.addAll(op);
+				Set<Opinion> set  = new LinkedHashSet<Opinion>();
+				set.addAll(friendsOpinions);
+				friendsOpinions.clear();
+				friendsOpinions.addAll(set);
+			}			
+		} else {
+			List<Opinion> publicOpinion = opinionServices.findAllPublicOpinions();
+			List<Opinion> userOpinion = opinionServices.findOpinionByUserName(comments.getUserName());
+			friendsOpinions.addAll(publicOpinion);
+			friendsOpinions.addAll(userOpinion);
+			Set<Opinion> set  = new LinkedHashSet<Opinion>();
+			set.addAll(friendsOpinions);
+			friendsOpinions.clear();
+			friendsOpinions.addAll(set);
+			
 		}
 		return new ResponseEntity<>(friendsOpinions, HttpStatus.CREATED);
 	}

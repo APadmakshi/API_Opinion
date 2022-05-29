@@ -58,7 +58,7 @@ public class PersonServices implements UserDetailsService{
 	
 	public Person addPerson(Person person)
 	{
-		person.setPassword(passwordEncoder.encode(person.getPassword()));
+		//person.setPassword(passwordEncoder.encode(person.getPassword()));
 		return personRepo.save(person);
 	}
 	
@@ -95,6 +95,11 @@ public class PersonServices implements UserDetailsService{
 			return true;
 		}
 		return false;
+	}
+	
+	public Person findPersonByUser(String userName)
+	{
+		return personRepo.findDistinctPersonByUserName(userName);
 	}
 
 	

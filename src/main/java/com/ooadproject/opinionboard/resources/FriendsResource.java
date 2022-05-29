@@ -25,10 +25,11 @@ public class FriendsResource {
 		this.friendsServices = friendsServices;
 	}
 	
-	@GetMapping("/friendslist/{id}")
-	ResponseEntity<List<String>> getFriendsOfUserName(@PathVariable("id") Long id)
+	@GetMapping("/friendslist/{username}")
+	ResponseEntity<List<String>> getFriendsOfUserName(@PathVariable("username") String userName)
 	{
-		Friends friends = friendsServices.findFriendOfUserName(id);
+		Friends getthefid = friendsServices.findFidOfUserName(userName);
+		Friends friends = friendsServices.findFriendOfUserName(getthefid.getFid());
 		String friend = friends.getFriendsOfUserName();
 		String[] arrayFriends = friend.split(",");
 		List<String> fri = new ArrayList<String>();

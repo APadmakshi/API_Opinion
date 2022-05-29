@@ -35,6 +35,10 @@ public class OpinionServices {
 		return opinionRepo.findOpinionByUsername(userName); 
 	}
 	
+	public List<Opinion> findAllPublicOpinions()
+	{
+		return opinionRepo.findOpinionsByIsPublic(true);
+	}
 
 	
 	

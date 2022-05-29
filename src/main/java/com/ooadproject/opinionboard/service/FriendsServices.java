@@ -18,6 +18,15 @@ public class FriendsServices {
 		this.friendsRepo = friendsrepo;
 	}
 	
+	public boolean findFriendsForUserName(String userName)
+	{
+		Friends friends = friendsRepo.findFidByUserName(userName);
+		if(friends == null)
+		{
+			return false;
+		}
+		return true;
+	}
 	public Friends findFriendOfUserName(Long id)
 	{
 		Friends friends = friendsRepo.findFriendsOfUserNameByFid(id);

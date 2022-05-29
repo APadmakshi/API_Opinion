@@ -21,7 +21,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CustomAuthorizationFilter extends OncePerRequestFilter{
 
 	private static final String AUTHORIZATION = "Authorization";

@@ -11,13 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.ooadproject.opinionboard.person.LoginClass;
 import com.ooadproject.opinionboard.person.Person;
 import com.ooadproject.opinionboard.person.Role;
 import com.ooadproject.opinionboard.service.PersonServices;
 
 import lombok.Data;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/person")
 public class PersonResource {
@@ -28,6 +29,17 @@ public class PersonResource {
 		this.personServices = personServices;
 	}
 	
+	@PostMapping("/login")
+	public ResponseEntity<String> authe(@RequestBody LoginClass loginData)
+	{
+		String uN = loginData.getUserName();
+		Person person = personServices.findPersonByUser(uN);
+		if(person.getPassword().equals(loginData.getPwd())) {
+			return new ResponseEntity<>(person.getUserName(),HttpStatus.ACCEPTED);
+		} else {
+			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		}
+	}
 	@GetMapping("/all")
 	public ResponseEntity<List<Person>> getAllPersons(){
 		List<Person> person = personServices.findAllPersons();
@@ -38,6 +50,13 @@ public class PersonResource {
 	public ResponseEntity<Boolean> getAllPersons(@PathVariable("userName") String userName){
 		Boolean persons = personServices.findPersonByUserName(userName);
 		return new ResponseEntity<>(persons, HttpStatus.OK);
+	}
+	
+	@GetMapping("/myprofile/{userName}")
+	public ResponseEntity<Person> findPerson(@PathVariable("userName") String userName)
+	{
+		Person person = personServices.findPersonByUser(userName);
+		return new ResponseEntity<>(person,HttpStatus.OK);
 	}
 	
 	@PostMapping("/addUser")
@@ -108,4 +127,5 @@ class RoletoUserForm {
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
 	}
+
 }
